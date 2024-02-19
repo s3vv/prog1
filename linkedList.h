@@ -1,13 +1,17 @@
 #ifndef LINKEDLIST_
 #define LINKEDLIST_
 
+#include <fstream>
 #include "node.h"
+
+using std::fstream;
 
 template<class T>
 class linkedList
 {
 	private:
 		node<T> * head;
+		node<T> * misspelled;
 		int size;
 		long long int goodCom;
 		long long int badCom;
@@ -28,8 +32,10 @@ class linkedList
 		~linkedList();
 		
 		void insert(T item);
+		void insert_misspelled(T item);
 		void remove();
 		bool find(T item);
+		void write_file(fstream &file);
 		int getSize()
 		{
 			return size;
@@ -72,3 +78,6 @@ class linkedList
 		{
 			return notChecked;
 		}
+};
+
+#endif

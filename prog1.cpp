@@ -2,9 +2,11 @@
 #include <fstream>
 #include "linkedList.h"
 #include "timer.h"
+#include <string>
 
 using std::cout;
 using std::fstream;
+using std::string;
 
 template<class T>
 linkedList<T>::~linkedList()
@@ -22,6 +24,13 @@ void linkedList<T>::insert(T item)
 	temp -> next = head;
 	head = temp;
 	size++;
+}
+
+template<class T>
+void linkedList<T>::insert_misspelled(T item) {
+	node<T> * temp = new node<T>(item);
+	temp -> next = misspelled;
+	misspelled = temp;
 }
 
 template<class T>
@@ -80,20 +89,32 @@ bool linkedList<T>::find(T item)
 	}
 	badCom += com;
 	notInDict++;
-	file << item << "\n";
+	insert_misspelled(item);
 	return false;
+}
+
+
+template<class T>
+void linkedList<T>::write_file(fstream &file) {
+	while (misspelled != nullptr) {
+		node<T> * temp = misspelled;
+		misspelled = misspelled -> next;
+		file << (temp -> data);
+		delete temp;
+	}
 }
 
 int main()
 {
     fstream dict("dict.txt");
     fstream book("book.txt");
+	fstream misspelledTxt("misspelledTxt.txt", std::ios::out |std::ios::trunc);
     Timer time;
     linkedList<string> strTest;
     string in;
     while(dict >> in)
 	{   
-        strTest.sort(in);
+        strTest.insert(in);
     }
     cout << "[+]\n";
     time.Start();
@@ -101,12 +122,13 @@ int main()
     while(!book.eof())
 	{
         book >> check;
-        strTest.find(check, mispelledTxt);
+        strTest.find(check);
     }
 	time.Stop();
+	strTest.write_file(misspelledTxt);
     dict.close();
     book.close();
-    mispelledTxt.close();
+    misspelledTxt.close();
     cout << "dictionary size " << strTest.getSize() << "\nDone checking and these are the results\n";
     cout << "finished in time: " << time.Time() << "\n";
     cout << "There are " << strTest.getInDict(1) << " words found in the dictionary\n";
