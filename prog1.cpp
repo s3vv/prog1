@@ -31,6 +31,7 @@ void linkedList<T>::insert_misspelled(T item) {
 	node<T> * temp = new node<T>(item);
 	temp -> next = misspelled;
 	misspelled = temp;
+	misspelledSize++;
 }
 
 template<class T>
@@ -96,11 +97,15 @@ bool linkedList<T>::find(T item)
 
 template<class T>
 void linkedList<T>::write_file(fstream &file) {
-	while (misspelled != nullptr) {
-		node<T> * temp = misspelled;
-		misspelled = misspelled -> next;
-		file << (temp -> data);
-		delete temp;
+
+	node<T> * temp;
+
+	while (misspelledSize > 0) {
+		file << misspelled -> data << '\n';
+		temp = misspelled -> next;
+		delete misspelled;
+		misspelled = temp;
+		misspelledSize--;
 	}
 }
 
@@ -125,7 +130,9 @@ int main()
         strTest.find(check);
     }
 	time.Stop();
+	cout << "[+]\n";
 	strTest.write_file(misspelledTxt);
+	cout << "[+]\n";
     dict.close();
     book.close();
     misspelledTxt.close();

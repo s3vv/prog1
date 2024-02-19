@@ -13,6 +13,7 @@ class linkedList
 		node<T> * head;
 		node<T> * misspelled;
 		int size;
+		int misspelledSize;
 		long long int goodCom;
 		long long int badCom;
 		int inDict;
